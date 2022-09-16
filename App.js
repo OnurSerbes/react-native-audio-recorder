@@ -13,6 +13,7 @@ import { useState, useEffect } from "react";
 export default function App() {
   const [recording, setRecording] = useState();
   const [recordings, setRecordings] = useState([]);
+  const [isRecording, setIsRecording] = useState(false);
   const [message, setMessage] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [title, setTitle] = useState("");
@@ -40,6 +41,7 @@ export default function App() {
         );
 
         setRecording(recording);
+        setIsRecording(true);
       } else {
         setMessage("Please grant permission to app to access microphone");
       }
@@ -49,14 +51,19 @@ export default function App() {
   }
 
   async function stopRecording() {
+    try {
+      await recording.stopAndUnloadAsync();
+    } catch (error) {
+      console.log(error);
+    }
+    setIsRecording(false);
     setModalVisible(!modalVisible);
-    recording.stopAndUnloadAsync();
   }
 
   async function saveRecording() {
     try {
-      setRecording(undefined);
-      /* await recording.stopAndUnloadAsync(); */
+      // setRecording(undefined);
+      // await recording.stopAndUnloadAsync();
       let updatedRecordings = [...recordings];
       const { sound, status } = await recording.createNewLoadedSoundAsync();
       updatedRecordings.push({
@@ -113,8 +120,8 @@ export default function App() {
           renderItem={recordingView}
         />
         <Button
-          title={recording ? "Stop Recording" : "Start Recording"}
-          onPress={recording ? stopRecording : startRecording}
+          title={isRecording ? "Stop Recording" : "Start Recording"}
+          onPress={isRecording ? stopRecording : startRecording}
         />
         <Modal
           animationType="slide"
