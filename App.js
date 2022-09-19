@@ -79,7 +79,7 @@ export default function App() {
     }
   }
 
-  function deleteItem(id) {
+  function deleteRecording(id) {
     const filteredData = recordings.filter((item) => item.id !== id);
     setRecordings(filteredData);
   }
@@ -102,7 +102,7 @@ export default function App() {
         <Button
           style={styles.button}
           onPress={() => {
-            deleteItem(item.item.id);
+            deleteRecording(item.item.id);
           }}
           title="Delete"
         ></Button>
